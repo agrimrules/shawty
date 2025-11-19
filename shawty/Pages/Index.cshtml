@@ -1,0 +1,33 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="glass-card">
+    <h1>Shawty</h1>
+    <p class="subtitle">Make your links short, sweet, and shareable.</p>
+    <p class="disclaimer" style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Links are valid for 72 hours.</p>
+
+    <form method="post">
+        <div class="form-group">
+            <input type="url" asp-for="LongUrl" placeholder="Paste your long URL here..." required autocomplete="off" />
+        </div>
+        <button type="submit">Shorten URL</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="error-message">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ShortUrl))
+    {
+        <div class="result-card">
+            <p>Your shortened URL is ready:</p>
+            <a href="@Model.ShortUrl" class="short-url" target="_blank">@Model.ShortUrl</a>
+        </div>
+    }
+</div>
