@@ -31,7 +31,7 @@ namespace Shawty.Database
                 using (var cmd = conn.CreateCommand())
                 {
                     string values = string.Join(", ", vals.Select(v => $"'{v}'"));
-                    cmd.CommandText = $"INSERT INTO {tableName} VALUES ({values})";
+                    cmd.CommandText = $"INSERT OR REPLACE INTO {tableName} VALUES ({values})";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -47,6 +47,37 @@ namespace Shawty.Database
                     cmd.CommandText = $"CREATE INDEX IF NOT EXISTS idx_{tableName}_{columnName} ON {tableName}({columnName})";
                     Console.WriteLine(cmd.CommandText);
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void CreateUniqueIndex(string tableName, string columnName)
+        {
+            using (var conn = new SqliteConnection(connectionUrl))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = $"CREATE UNIQUE INDEX IF NOT EXISTS idx_{tableName}_{columnName} ON {tableName}({columnName})";
+                    Console.WriteLine(cmd.CommandText);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public static void RemoveDuplicates(string tableName, string columnName)
+        {
+            using (var conn = new SqliteConnection(connectionUrl))
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = $"DELETE FROM {tableName} WHERE rowid NOT IN (SELECT MAX(rowid) FROM {tableName} GROUP BY {columnName})";
+                    int deleted = cmd.ExecuteNonQuery();
+                    if (deleted > 0)
+                    {
+                        Console.WriteLine($"Removed {deleted} duplicate rows from {tableName}.");
+                    }
                 }
             }
         }

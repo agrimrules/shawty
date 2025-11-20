@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddMemoryCache();
 builder.Services.AddHostedService<Shawty.Services.UrlCleanupService>();
 
 var app = builder.Build();
@@ -15,6 +16,8 @@ var app = builder.Build();
 string[,] colsTypes = { { "url", "string" }, { "encoded", "string" }, { "timestamp", "datetime" } };
 DatabaseManager.CreateTable("urls", colsTypes);
 DatabaseManager.CreateIndex("urls", "encoded");
+DatabaseManager.RemoveDuplicates("urls", "url");
+DatabaseManager.CreateUniqueIndex("urls", "url");
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

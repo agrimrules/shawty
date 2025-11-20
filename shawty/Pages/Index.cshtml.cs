@@ -3,11 +3,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Shawty.Database;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Shawty.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly IMemoryCache _cache;
+
+        public IndexModel(IMemoryCache cache)
+        {
+            _cache = cache;
+        }
         [BindProperty]
         public string LongUrl { get; set; }
 
@@ -25,6 +32,24 @@ namespace Shawty.Pages
                 ErrorMessage = "Please enter a valid URL.";
                 return Page();
             }
+
+            string ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+            string cacheKey = $"RateLimit_{ipAddress}";
+
+            if (_cache.TryGetValue(cacheKey, out DateTime resetTime))
+            {
+                var remaining = (resetTime - DateTime.Now).TotalSeconds;
+                if (remaining > 0)
+                {
+                    ErrorMessage = $"Rate limit reached. Try again in {Math.Ceiling(remaining)} seconds.";
+                    return Page();
+                }
+            }
+
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .SetAbsoluteExpiration(TimeSpan.FromSeconds(5));
+
+            _cache.Set(cacheKey, DateTime.Now.AddSeconds(5), cacheEntryOptions);
 
             try
             {
