@@ -1,0 +1,13 @@
+[build]
+  # Netlify will build the Docker image itself; no build command needed.
+  # If you want Netlify to build the image, you can use a Dockerfile in a subfolder.
+  # Here we just tell Netlify to use the Dockerfile in the repo root.
+  publish = "."   # not used for Docker, but required
+
+[dev]
+  # Optional: local dev mode using Netlify CLI
+  command = "docker compose up --build"
+  port = 5277      # matches your docker‑compose mapping
+
+[functions]
+  # Not used because we run the whole app as a container.

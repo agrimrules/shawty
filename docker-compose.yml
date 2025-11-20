@@ -1,0 +1,11 @@
+services:
+  shawty:
+    build:
+      context: .
+      dockerfile: shawty/Dockerfile
+    ports:
+      - "5277:8080"
+    volumes:
+      - ./sqlite:/sqlite
+    environment:
+      - ASPNETCORE_URLS=http://+:8080

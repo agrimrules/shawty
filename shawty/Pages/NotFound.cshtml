@@ -1,0 +1,36 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Not Found";
+}
+
+<div class="not-found-container">
+    <div class="not-found-title">404</div>
+    <p class="not-found-text">Oops! That link has vanished into the void.</p>
+</div>
+
+<div class="glass-card">
+    <p class="subtitle">But you can still create a new one!</p>
+
+    <form method="post">
+        <div class="form-group">
+            <input type="url" asp-for="LongUrl" placeholder="Paste your long URL here..." required autocomplete="off" />
+        </div>
+        <button type="submit">Shorten URL</button>
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="error-message">
+            @Model.ErrorMessage
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.ShortUrl))
+    {
+        <div class="result-card">
+            <p>Your shortened URL is ready:</p>
+            <a href="@Model.ShortUrl" class="short-url" target="_blank">@Model.ShortUrl</a>
+        </div>
+    }
+</div>
