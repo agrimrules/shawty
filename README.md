@@ -1,6 +1,7 @@
-# Shawty 🔗
+# [Shawty](https://shawty.agrim.dev) 🔗
 
-A URL shortener built with ASP.NET Core, featuring a beautiful dark-mode UI, automatic link expiration, and Docker support.
+
+A URL shortener built with ASP.NET Core, featuring a beautiful  UI, automatic link expiration, and Docker support. currently hosted [here](https://shawty.agrim.dev).
 
 ![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet)
 ![License](https://img.shields.io/badge/license-%20%20GNU%20GPLv3%20-green?style=plastic)
