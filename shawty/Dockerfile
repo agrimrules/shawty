@@ -11,6 +11,10 @@ RUN dotnet publish "shawty.csproj" -c Release -o /app/publish /p:UseAppHost=fals
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
+
+# Create SQLite database directory
+RUN mkdir -p /sqlite && chmod 777 /sqlite
+
 EXPOSE 8080
 COPY --from=publish /app/publish .
 ENV ASPNETCORE_URLS=http://+:${PORT:-8080}
