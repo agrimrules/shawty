@@ -4,16 +4,16 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="glass-card">
+<div class="main-card">
     <h1>Shawty</h1>
-    <p class="subtitle">Make your links short, sweet, and shareable.</p>
-    <p class="disclaimer" style="text-align: center; color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Links are valid for 72 hours.</p>
+    <p class="subtitle">Make your links short and simple</p>
+    <p class="disclaimer">Links expire after 72 hours</p>
 
     <form method="post">
         <div class="form-group">
-            <input type="url" asp-for="LongUrl" placeholder="Paste your long URL here..." required autocomplete="off" />
+            <input type="url" asp-for="LongUrl" placeholder="Enter your long URL" required autocomplete="off" />
         </div>
-        <button type="submit">Shorten URL</button>
+        <button type="submit">✨ Shorten</button>
     </form>
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
@@ -26,8 +26,72 @@
     @if (!string.IsNullOrEmpty(Model.ShortUrl))
     {
         <div class="result-card">
-            <p>Your shortened URL is ready:</p>
-            <a href="@Model.ShortUrl" class="short-url" target="_blank">@Model.ShortUrl</a>
+            <p>✓ Your short link is ready:</p>
+            <a href="@Model.ShortUrl" class="short-url" target="_blank" id="shortUrl">@Model.ShortUrl</a>
+            <br>
+            <button type="button" class="copy-btn" onclick="copyToClipboard()">📋 Copy Link</button>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function copyToClipboard() {
+            const urlElement = document.getElementById('shortUrl');
+            const url = urlElement.textContent;
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            // Try modern clipboard API first
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showCopySuccess(btn, originalText);
+                }).catch(err => {
+                    console.error('Clipboard API failed:', err);
+                    fallbackCopy(url, btn, originalText);
+                });
+            } else {
+                // Fallback for older browsers
+                fallbackCopy(url, btn, originalText);
+            }
+        }
+        
+        function fallbackCopy(text, btn, originalText) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showCopySuccess(btn, originalText);
+                } else {
+                    console.error('execCommand copy failed');
+                }
+            } catch (err) {
+                console.error('Fallback copy error:', err);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function showCopySuccess(btn, originalText) {
+            btn.textContent = '✓ Copied!';
+            btn.style.background = '#00c853';
+            btn.style.color = 'white';
+            btn.style.borderColor = '#00c853';
+            
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+            }, 2000);
+        }
+    </script>
+}

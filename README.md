@@ -150,23 +150,6 @@ The background service runs every **1 hour**. To change this:
 private readonly TimeSpan _period = TimeSpan.FromHours(1);  // Adjust as needed
 ```
 
-## 🌐 Deployment
-
-### Netlify (with Custom Domain)
-
-1. **Update the Dockerfile** (already done):
-   ```dockerfile
-   ENV ASPNETCORE_URLS=http://+:${PORT:-8080}
-   ```
-
-2. **Add `netlify.toml`** (already included in the project)
-
-3. **Push to Git** and connect to Netlify
-
-4. **Configure your custom domain** in Netlify's dashboard
-
-5. **Set up persistent storage** for the SQLite database
-
 ### Other Platforms
 
 The application works on any platform that supports:
