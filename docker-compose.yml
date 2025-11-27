@@ -9,3 +9,4 @@ services:
       - ./sqlite:/sqlite
     environment:
       - ASPNETCORE_URLS=http://+:8080
+      - OpenAI__ApiKey=${OPENAI_API_KEY}
