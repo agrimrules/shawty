@@ -57,6 +57,13 @@ A URL shortener built with ASP.NET Core, featuring a beautiful  UI, automatic li
    docker-compose down
    ```
 
+### Using the mnemonic URL shortener feature
+
+1. **Add OpenAI API key as environment variable before starting**
+   ```bash
+   export OPENAI_API_KEY=xyz
+   ```
+
 ## 📖 Usage
 
 ### Web UI

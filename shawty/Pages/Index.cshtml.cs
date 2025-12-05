@@ -1,20 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Shawty.Database;
-using System.Security.Cryptography;
-using System.Text;
 using Microsoft.Extensions.Caching.Memory;
+using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Shawty.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly IMemoryCache _cache;
+        private readonly HttpClient _httpClient;
 
-        public IndexModel(IMemoryCache cache)
+        public IndexModel(IMemoryCache cache, HttpClient httpClient)
         {
             _cache = cache;
+            _httpClient = httpClient;
         }
+
         [BindProperty]
         public string LongUrl { get; set; }
 
@@ -25,7 +27,7 @@ namespace Shawty.Pages
         {
         }
 
-        public IActionResult OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (string.IsNullOrWhiteSpace(LongUrl))
             {
@@ -60,26 +62,27 @@ namespace Shawty.Pages
                     return Page();
                 }
 
-                byte[] ip = Encoding.UTF8.GetBytes(LongUrl);
-                using (var md5 = MD5.Create())
+                // Call the internal API (use localhost:8080 inside container)
+                var request = HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host}";
+                
+                var response = await _httpClient.PostAsJsonAsync("http://localhost:8080/api/shorten", new { url = LongUrl });
+                
+                if (response.IsSuccessStatusCode)
                 {
-                    byte[] hashBytes = md5.ComputeHash(ip);
-                    string b64 = Convert.ToBase64String(hashBytes)
-                        .Replace("+", "-")
-                        .Replace("/", "_")
-                        .Substring(0, 8);
-                    
-                    DatabaseManager.Insert("urls", new string[] { LongUrl, b64, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") });
-                    
-                    var request = HttpContext.Request;
-                    var baseUrl = $"{request.Scheme}://{request.Host}";
-                    ShortUrl = $"{baseUrl}/{b64}";
+                    var result = await response.Content.ReadFromJsonAsync<JsonElement>();
+                    var shortCode = result.GetProperty("shortCode").GetString();
+                    ShortUrl = $"{baseUrl}/{shortCode}";
+                }
+                else
+                {
+                    ErrorMessage = "An error occurred while shortening the URL.";
                 }
             }
             catch (Exception ex)
             {
                 ErrorMessage = "An error occurred while shortening the URL.";
-                // Log error
+                Console.WriteLine($"Error in OnPostAsync: {ex.Message}");
             }
 
             return Page();
