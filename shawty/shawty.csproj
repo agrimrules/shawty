@@ -1,9 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <PackageLicenseExpression>GPL-V3</PackageLicenseExpression>
+    <!-- Trimming can reduce size but check for reflection/serialization issues -->
+    <!-- <PublishTrimmed>true</PublishTrimmed> -->
   </PropertyGroup>
 
   <ItemGroup>
