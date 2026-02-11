@@ -62,4 +62,10 @@ jobs:
       - name: Run dotnet-releaser
         if: startsWith(github.ref, 'refs/tags/')
         shell: bash
-        run: dotnet-releaser run --github-token "${{ secrets.GH_TOKEN }}" dotnet-releaser.toml
+        run: |
+          # Strip 'v' from tag name (e.g., v0.0.7 -> 0.0.7)
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "Setting project version to $VERSION"
+          # Pass version to MSBuild via environment variable
+          export Version=$VERSION
+          dotnet-releaser run --github-token "${{ secrets.GH_TOKEN }}" dotnet-releaser.toml

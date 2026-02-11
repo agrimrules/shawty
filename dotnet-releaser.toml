@@ -1,5 +1,6 @@
 [msbuild]
 project = "shawty/shawty.csproj"
+kind = "app"
 
 [msbuild.properties]
 PublishSingleFile = "true"
@@ -15,7 +16,9 @@ publish = true
 [nuget]
 publish = false
 
-[pack]
+[[pack]]
+publish = true
+rid = ["win-x64", "linux-x64", "osx-x64", "osx-arm64", "linux-arm64"]
 # Enable standard platform packages (zip/tarball)
 # The tool will automatically create these for common targets.
 
