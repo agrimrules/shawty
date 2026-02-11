@@ -1,6 +1,5 @@
 [msbuild]
 project = "shawty/shawty.csproj"
-kind = "app"
 
 [msbuild.properties]
 PublishSingleFile = "true"
