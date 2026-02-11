@@ -12,6 +12,9 @@ version_prefix = "v"
 branches = ["main"]
 publish = true
 
+[nuget]
+publish = false
+
 [pack]
 # Enable standard platform packages (zip/tarball)
 # The tool will automatically create these for common targets.
