@@ -61,4 +61,5 @@ jobs:
 
       - name: Run dotnet-releaser
         if: startsWith(github.ref, 'refs/tags/')
-        run: dotnet-releaser run --github-token ${{ secrets.GH_TOKEN }} dotnet-releaser.toml
+        shell: bash
+        run: dotnet-releaser run --github-token "${{ secrets.GH_TOKEN }}" dotnet-releaser.toml
