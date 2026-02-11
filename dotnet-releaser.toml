@@ -8,6 +8,9 @@ SelfContained = "true"
 [github]
 user = "agrimrules"
 repo = "shawty"
+version_prefix = "v"
+branches = ["main"]
+publish = true
 
 [pack]
 # Enable standard platform packages (zip/tarball)
